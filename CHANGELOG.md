@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project uses [Semantic Versioning](https://semver.org/)
 
+## v1.6.7 (Pending Release)
+
+### Changed
+
+- ci: update github actions to their latest versions
+
 ## v1.6.6 (2026-10-18)
 
 ### Changed
