@@ -2,7 +2,7 @@
   "name": "@homebridge-plugins/homebridge-sharkiq",
   "displayName": "SharkIQ Plugin",
   "type": "module",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "A Homebridge plugin to connect your Shark Vacuum to homebridge.",
   "author": {
     "name": "Bubba8291",
