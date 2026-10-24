@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
-- ci: update github actions to their latest versions
+- ci: update github actions to their latest versions (#100)
+- chore(deps): dependency updates
 
 ## v1.6.6 (2026-10-18)
 

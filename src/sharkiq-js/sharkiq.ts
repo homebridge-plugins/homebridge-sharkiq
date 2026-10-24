@@ -135,7 +135,10 @@ export const ROOM_CLEAN_DEFAULTS: Required<RoomCleanOptions> = ROOM_CLEAN_PRESET
  * needed — the room list already carries it.
  */
 export function encodeRoomListV3(rooms: string[], floorId: string, options: RoomCleanOptions = {}): string {
-  const { mode, cleanCount, cleanType } = { ...ROOM_CLEAN_DEFAULTS, ...options }
+  const { mode, cleanCount, cleanType } = {
+    ...ROOM_CLEAN_DEFAULTS,
+    ...options,
+  }
   return JSON.stringify({
     areas_to_clean: { [mode]: rooms },
     clean_count: cleanCount,
@@ -152,7 +155,9 @@ export function encodeRoomListV3(rooms: string[], floorId: string, options: Room
  * request. Older vacuums never report V3, so they keep the V2 binary path.
  */
 export function chooseAreaFilterProperty(propertyValues: Record<string, unknown> | undefined): 'AreasToClean_V2' | 'AreasToClean_V3' {
-  return propertyValues?.AreasToClean_V3 === undefined ? 'AreasToClean_V2' : 'AreasToClean_V3'
+  return propertyValues?.AreasToClean_V3 === undefined
+    ? 'AreasToClean_V2'
+    : 'AreasToClean_V3'
 }
 
 /** One entry of the Matter ServiceArea cluster's `supportedAreas`. */
@@ -255,8 +260,12 @@ export const BATTERY_LOW_THRESHOLD = 20
 export const BATTERY_CRITICAL_THRESHOLD = 10
 
 export function readVacuumBattery(rawPercent: unknown, rawCharging: unknown): VacuumBattery {
-  const parsed = typeof rawPercent === 'number' ? rawPercent : Number.parseInt(String(rawPercent ?? ''), 10)
-  const percent = Number.isFinite(parsed) ? Math.max(0, Math.min(100, Math.round(parsed))) : undefined
+  const parsed = typeof rawPercent === 'number'
+    ? rawPercent
+    : Number.parseInt(String(rawPercent ?? ''), 10)
+  const percent = Number.isFinite(parsed)
+    ? Math.max(0, Math.min(100, Math.round(parsed)))
+    : undefined
   // Charging_Status is 1/0 on this API, but a boolean is cheap to tolerate.
   const charging = rawCharging === true || rawCharging === 1 || String(rawCharging) === '1'
 
@@ -269,7 +278,12 @@ export function readVacuumBattery(rawPercent: unknown, rawCharging: unknown): Va
     }
   }
 
-  return { percent, charging, chargeLevel, low: percent !== undefined && percent < BATTERY_LOW_THRESHOLD }
+  return {
+    percent,
+    charging,
+    chargeLevel,
+    low: percent !== undefined && percent < BATTERY_LOW_THRESHOLD,
+  }
 }
 
 /**
@@ -285,12 +299,18 @@ export function matterPowerSourceState(battery: VacuumBattery): Record<string, u
     order: 0,
     description: 'Battery',
     batPresent: true,
-    batPercentRemaining: battery.percent === undefined ? null : battery.percent * 2,
+    batPercentRemaining: battery.percent === undefined
+      ? null
+      : battery.percent * 2,
     batChargeLevel: battery.chargeLevel,
     batReplacementNeeded: false,
     batReplaceability: 0, // NotReplaceable
     // 0 Unknown, 1 IsCharging, 2 IsAtFullCharge, 3 IsNotCharging
-    batChargeState: battery.charging ? 1 : (battery.percent === 100 ? 2 : 3),
+    batChargeState: battery.charging
+      ? 1
+      : (battery.percent === 100
+          ? 2
+          : 3),
     // ⚠️ Mandatory for a rechargeable power source, and matter.js defaults it to
     // FALSE if you leave it out - which claims the vacuum stops working the
     // moment it is on the dock. A Shark runs perfectly well from a part charge,
@@ -333,9 +353,30 @@ export const MODE_TAG = {
  * picker. Spec purity lost to being usable.
  */
 export const MATTER_CLEAN_MODES = [
-  { label: 'Eco', mode: 1, modeTags: [{ value: MODE_TAG.vacuum }, { value: MODE_TAG.lowEnergy }] }, // PowerModes.ECO
-  { label: 'Normal', mode: 0, modeTags: [{ value: MODE_TAG.vacuum }, { value: MODE_TAG.auto }] }, // PowerModes.NORMAL
-  { label: 'Max', mode: 2, modeTags: [{ value: MODE_TAG.vacuum }, { value: MODE_TAG.max }] }, // PowerModes.MAX
+  {
+    label: 'Eco',
+    mode: 1,
+    modeTags: [
+      { value: MODE_TAG.vacuum },
+      { value: MODE_TAG.lowEnergy },
+    ],
+  }, // PowerModes.ECO
+  {
+    label: 'Normal',
+    mode: 0,
+    modeTags: [
+      { value: MODE_TAG.vacuum },
+      { value: MODE_TAG.auto },
+    ],
+  }, // PowerModes.NORMAL
+  {
+    label: 'Max',
+    mode: 2,
+    modeTags: [
+      { value: MODE_TAG.vacuum },
+      { value: MODE_TAG.max },
+    ],
+  }, // PowerModes.MAX
 ] as const
 
 /** Whether a mode number a controller sent is one this vacuum actually has. */
@@ -416,11 +457,15 @@ export interface VacuumFault {
 /** Reads a number the API may report as a number or a string. */
 function readNumber(raw: unknown): number | undefined {
   if (typeof raw === 'number') {
-    return Number.isFinite(raw) ? raw : undefined
+    return Number.isFinite(raw)
+      ? raw
+      : undefined
   }
   if (typeof raw === 'string' && raw.trim() !== '') {
     const parsed = Number.parseInt(raw, 10)
-    return Number.isFinite(parsed) ? parsed : undefined
+    return Number.isFinite(parsed)
+      ? parsed
+      : undefined
   }
   return undefined
 }
@@ -454,10 +499,14 @@ export function readVacuumFault(rawCode: unknown, rawExtendedCode?: unknown): Va
   }
   const extendedCode = readNumber(rawExtendedCode)
   const known = ERROR_MESSAGES[code as keyof typeof ERROR_MESSAGES]
-  const message = known ?? `Unknown error (code ${code}${extendedCode ? `, extended ${extendedCode}` : ''})`
+  const message = known ?? `Unknown error (code ${code}${extendedCode
+    ? `, extended ${extendedCode}`
+    : ''})`
   return {
     code,
-    ...(extendedCode === undefined || extendedCode === 0 ? {} : { extendedCode }),
+    ...(extendedCode === undefined || extendedCode === 0
+      ? {}
+      : { extendedCode }),
     message,
     matterErrorStateId: MATTER_ERROR_STATE_BY_CODE[code] ?? MATTER_ERROR_STATE.unableToCompleteOperation,
   }
@@ -734,7 +783,9 @@ class SharkIqVacuum {
     }
 
     const end_point = this.set_property_endpoint(`SET_${property_name}`)
-    const data = { datapoint: { value } }
+    const data = {
+      datapoint: { value },
+    }
     try {
       const auth_header = await this.ayla_api.auth_header()
       const resp = await this.ayla_api.makeRequest('POST', end_point, data, auth_header)
@@ -786,7 +837,9 @@ class SharkIqVacuum {
       // to read, and asking anyway returns an error for every poll. The newer
       // API is the only source of state for it, full updates included (#91).
       if (this.newApiOnly) {
-        return await this._apply_skegox_state() ? 0 : ERROR_DELAY
+        return await this._apply_skegox_state()
+          ? 0
+          : ERROR_DELAY
       }
       // Newer vacuums no longer report fresh state to the Ayla API, so read
       // the live state from the newer SharkNinja API when this vacuum is on
@@ -821,12 +874,16 @@ class SharkIqVacuum {
             return TIMEOUT_DELAY
           } else if (resp.status === 500) {
             // Handle 500 server errors gracefully
-            this.log.error(`Server error (500) - API temporarily unavailable. Status: ${resp.status}, Error: ${properties.error ? JSON.stringify(properties.error) : 'Internal server error'}`)
+            this.log.error(`Server error (500) - API temporarily unavailable. Status: ${resp.status}, Error: ${properties.error
+              ? JSON.stringify(properties.error)
+              : 'Internal server error'}`)
             return ERROR_DELAY
           } else if (resp.ok !== true) {
             this.log.warn('Error getting property values', property_list.join(', '))
             this.log.debug(`Raw API Response: ${resp.response}`)
-            this.log.error(`API Error - Status: ${resp.status}, Error: ${properties.error ? JSON.stringify(properties.error) : 'Unknown error'}`)
+            this.log.error(`API Error - Status: ${resp.status}, Error: ${properties.error
+              ? JSON.stringify(properties.error)
+              : 'Unknown error'}`)
             const status = await this.ayla_api.attempt_refresh(attempt)
             if (!status && attempt === 1) {
               return ERROR_DELAY
@@ -865,12 +922,16 @@ class SharkIqVacuum {
             return TIMEOUT_DELAY
           } else if (resp.status === 500) {
             // Handle 500 server errors gracefully
-            this.log.error(`Server error (500) - API temporarily unavailable. Status: ${resp.status}, Error: ${properties.error ? JSON.stringify(properties.error) : 'Internal server error'}`)
+            this.log.error(`Server error (500) - API temporarily unavailable. Status: ${resp.status}, Error: ${properties.error
+              ? JSON.stringify(properties.error)
+              : 'Internal server error'}`)
             return ERROR_DELAY
           } else if (resp.ok !== true) {
             this.log.warn('Error getting property values.')
             this.log.debug(`Raw API Response (full update): ${resp.response}`)
-            this.log.error(`API Error - Status: ${resp.status}, Error: ${properties.error ? JSON.stringify(properties.error) : 'Unknown error'}`)
+            this.log.error(`API Error - Status: ${resp.status}, Error: ${properties.error
+              ? JSON.stringify(properties.error)
+              : 'Unknown error'}`)
             const status = await this.ayla_api.attempt_refresh(attempt)
             if (!status && attempt === 1) {
               return ERROR_DELAY
@@ -904,7 +965,10 @@ class SharkIqVacuum {
     }
     try {
       const values = await this.skegox.getPropertyValues(this._dsn)
-      this.property_values = { ...this.property_values, ...values }
+      this.property_values = {
+        ...this.property_values,
+        ...values,
+      }
       const names = Object.keys(values)
       this.log.debug(`Read ${names.length} properties via the new SharkNinja API.`)
       // The names, not just the count. Asking a reporter to look for a property

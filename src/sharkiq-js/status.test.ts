@@ -125,7 +125,11 @@ describe('matterOperationalError', () => {
    * accessory offline in #83.
    */
   it('never sets errorStateLabel, which is only legal on manufacturer ids', () => {
-    for (const fault of [undefined, readVacuumFault(4), readVacuumFault(99)]) {
+    for (const fault of [
+      undefined,
+      readVacuumFault(4),
+      readVacuumFault(99),
+    ]) {
       const error = matterOperationalError(fault, emptyTank, true)
       expect(error).not.toHaveProperty('errorStateLabel')
       expect(error.errorStateId).toBeLessThan(0x80)

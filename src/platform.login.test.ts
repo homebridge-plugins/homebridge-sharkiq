@@ -44,19 +44,44 @@ vi.mock('./sharkiq-js/skegox_api.js', () => ({
 const { SharkIQPlatform } = await import('./platform.js')
 
 function makePlatform(config: Record<string, unknown> = {}) {
-  const log: any = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), success: vi.fn() }
+  const log: any = {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    success: vi.fn(),
+  }
   const api: any = {
     on: vi.fn(),
-    hap: { Service: {}, Characteristic: {}, uuid: { generate: (s: string) => `uuid-${s}` } },
-    user: { storagePath: () => '/tmp' },
+    hap: {
+      Service: {},
+      Characteristic: {},
+      uuid: {
+        generate: (s: string) => `uuid-${s}`,
+      },
+    },
+    user: {
+      storagePath: () => '/tmp',
+    },
   }
-  return { platform: new SharkIQPlatform(log, { platform: 'SharkIQ', ...config } as any, api), log }
+  return {
+    platform: new SharkIQPlatform(log, { platform: 'SharkIQ', ...config } as any, api),
+    log,
+  }
 }
 
 describe('login', () => {
   it('falls back to the newer API when the Ayla account lists no vacuums', async () => {
     aylaDevices.current = []
-    skegoxDevices.current = [{ dsn: 'AC000W123456789', deviceId: 'SND1', name: 'Shark', model: 'RV761', connected: true }]
+    skegoxDevices.current = [
+      {
+        dsn: 'AC000W123456789',
+        deviceId: 'SND1',
+        name: 'Shark',
+        model: 'RV761',
+        connected: true,
+      },
+    ]
     skegoxValues.current = { Operating_Mode: 2 }
 
     const { platform } = makePlatform()
@@ -69,8 +94,18 @@ describe('login', () => {
 
   it('leaves the Ayla list alone when it does have vacuums', async () => {
     // The fallback must not double up an account that works today
-    aylaDevices.current = [{ _dsn: 'AYLA1', roomCleanOptions: {} }]
-    skegoxDevices.current = [{ dsn: 'AYLA1', deviceId: 'SND1', name: 'Shark', model: 'RV761', connected: true }]
+    aylaDevices.current = [
+      { _dsn: 'AYLA1', roomCleanOptions: {} },
+    ]
+    skegoxDevices.current = [
+      {
+        dsn: 'AYLA1',
+        deviceId: 'SND1',
+        name: 'Shark',
+        model: 'RV761',
+        connected: true,
+      },
+    ]
     skegoxValues.current = { Operating_Mode: 2 }
 
     const { platform } = makePlatform()

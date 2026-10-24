@@ -94,7 +94,12 @@ describe('encodeRoomListV3', () => {
 
   it('uses the key order the app sends', () => {
     expect(Object.keys(JSON.parse(encodeRoomListV3(['Kitchen'], '6ABE3ECC'))))
-      .toEqual(['areas_to_clean', 'clean_count', 'floor_id', 'cleantype'])
+      .toEqual([
+        'areas_to_clean',
+        'clean_count',
+        'floor_id',
+        'cleantype',
+      ])
   })
 
   it('carries several rooms in one request', () => {
@@ -115,7 +120,9 @@ describe('encodeRoomListV3', () => {
 
   it('allows the mode, pass count and clean type to be overridden', () => {
     const parsed = JSON.parse(encodeRoomListV3(['Kitchen'], 'F1', { mode: 'Eco', cleanCount: 1, cleanType: 'wet' }))
-    expect(parsed.areas_to_clean).toEqual({ Eco: ['Kitchen'] })
+    expect(parsed.areas_to_clean).toEqual({
+      Eco: ['Kitchen'],
+    })
     expect(parsed.clean_count).toBe(1)
     expect(parsed.cleantype).toBe('wet')
   })
@@ -152,7 +159,13 @@ describe('chooseAreaFilterProperty', () => {
 /**
  * Mapping the vacuum's rooms onto Matter's ServiceArea cluster (#41).
  */
-const HIS_ROOMS = ['Kitchen', 'Dining Room', 'Living Room', 'Hallway', 'Downstairs Toilet']
+const HIS_ROOMS = [
+  'Kitchen',
+  'Dining Room',
+  'Living Room',
+  'Hallway',
+  'Downstairs Toilet',
+]
 
 describe('buildSupportedAreas', () => {
   it('turns the room list into one area each, ids starting at 1', () => {

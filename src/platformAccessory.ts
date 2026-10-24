@@ -306,7 +306,9 @@ export class SharkIQAccessory {
     // A fault is worth an actual warning - it usually means the vacuum has
     // stopped and is waiting for someone to go and free it.
     if (fault) {
-      this.log.warn(`${this.device._name}: ${fault.message}${fault.extendedCode ? ` (extended code ${fault.extendedCode})` : ''}`)
+      this.log.warn(`${this.device._name}: ${fault.message}${fault.extendedCode
+        ? ` (extended code ${fault.extendedCode})`
+        : ''}`)
     }
 
     this.log.debug('Vacuum Docked:', vacuumDocked, 'Vacuum Active:', vacuumActive, 'Power Mode:', power_mode, 'Battery:', battery.percent ?? 'unknown', battery.charging ? '(charging)' : '')
@@ -398,7 +400,9 @@ export class SharkIQAccessory {
       // Reuse the current fan speed, defaulting to max when none is set.
       if (!running) {
         const currentSpeed = Number(this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed).value)
-        const speed = currentSpeed > VACUUM_SPEEDS.OFF ? currentSpeed : VACUUM_SPEEDS.MAX
+        const speed = currentSpeed > VACUUM_SPEEDS.OFF
+          ? currentSpeed
+          : VACUUM_SPEEDS.MAX
         await this.setFanSpeed(speed)
           .catch(createPromiseRejectionHandler(this.log, 'starting the vacuum'))
       }

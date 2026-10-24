@@ -94,7 +94,9 @@ class AylaApi {
     this._access_token = login_result.access_token
     this._refresh_token = login_result.refresh_token
     const _auth_expiration = new Date(login_result.expiration)
-    this._auth_expiration = isValidDate(_auth_expiration) ? _auth_expiration : null
+    this._auth_expiration = isValidDate(_auth_expiration)
+      ? _auth_expiration
+      : null
     this._is_authed = true
   }
 
@@ -114,7 +116,9 @@ class AylaApi {
   // Refresh auth token
   async refresh_auth(): Promise<boolean> {
     this.log.debug('Refreshing auth token.')
-    const refresh_data = { user: { refresh_token: this._refresh_token } }
+    const refresh_data = {
+      user: { refresh_token: this._refresh_token },
+    }
     const url = `${this.europe ? global_vars.EU_LOGIN_URL : global_vars.LOGIN_URL}/users/refresh_token.json`
     try {
       const resp = await this.makeRequest('POST', url, refresh_data, null)
@@ -157,7 +161,9 @@ class AylaApi {
 
   // Get signout json request data
   get sign_out_data(): object {
-    return { user: { access_token: this._access_token } }
+    return {
+      user: { access_token: this._access_token },
+    }
   }
 
   // Clear auth data

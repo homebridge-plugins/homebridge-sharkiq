@@ -111,7 +111,9 @@ export class SkegoxApi {
     const response = await fetch(`${this.base_url}${path}`, {
       method,
       headers: this.headers(idToken),
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined
+        ? undefined
+        : JSON.stringify(body),
     })
     if (response.status === 401 && attempt === 0) {
       return this.request(method, path, body, attempt + 1)
@@ -134,7 +136,9 @@ export class SkegoxApi {
     const payload = idToken.split('.')[1]
     const claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'))
     const sub: string = claims.sub ?? ''
-    this.user_id = sub.includes('|') ? sub.split('|', 2)[1] : sub
+    this.user_id = sub.includes('|')
+      ? sub.split('|', 2)[1]
+      : sub
 
     const householdData = await this.request('GET', `/householdsEndUser?userId=${encodeURIComponent(this.user_id ?? '')}`)
     const households: string[] = householdData?.households ?? []
@@ -144,7 +148,9 @@ export class SkegoxApi {
     this.household_id = households[0]
 
     const deviceData = await this.request('GET', `/devicesEndUserController/${this.household_id}/users/${this.user_id}`)
-    const items: any[] = Array.isArray(deviceData) ? deviceData : (deviceData?.items ?? [])
+    const items: any[] = Array.isArray(deviceData)
+      ? deviceData
+      : (deviceData?.items ?? [])
 
     for (const item of items) {
       const deviceId: string | undefined = item?.deviceId ?? item?.snd
@@ -211,7 +217,11 @@ export class SkegoxApi {
       return Promise.reject(new Error(`Vacuum ${dsn} is not mapped on the new SharkNinja API.`))
     }
     const response = await this.request('PATCH', `/devicesEndUserController/${this.household_id}/devices/${deviceId}`, {
-      shadow: { properties: { desired: { [propertyName]: value } } },
+      shadow: {
+        properties: {
+          desired: { [propertyName]: value },
+        },
+      },
     })
     this.log.debug(`New-API response for setting ${propertyName}: ${JSON.stringify(response)}`)
   }
@@ -236,9 +246,14 @@ export class SkegoxApi {
       values[k] = v
     })
     Object.entries(device?.shadow?.properties?.reported ?? {}).forEach(([k, v]) => {
-      values[k] = (v && typeof v === 'object' && 'value' in (v as Record<string, unknown>)) ? (v as Record<string, unknown>).value : v
+      values[k] = (v && typeof v === 'object' && 'value' in (v as Record<string, unknown>))
+        ? (v as Record<string, unknown>).value
+        : v
     })
-    this.state_cache.set(key, { at: Date.now(), values })
+    this.state_cache.set(key, {
+      at: Date.now(),
+      values,
+    })
     return values
   }
 

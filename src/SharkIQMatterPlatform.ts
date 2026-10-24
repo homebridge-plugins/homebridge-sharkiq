@@ -125,7 +125,9 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
       return
     }
 
-    this.log.info(`Removing ${this.accessories.length} cached HAP accessor${this.accessories.length === 1 ? 'y' : 'ies'} before Matter registration.`)
+    this.log.info(`Removing ${this.accessories.length} cached HAP accessor${this.accessories.length === 1
+      ? 'y'
+      : 'ies'} before Matter registration.`)
     this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [...this.accessories])
     this.accessories.splice(0, this.accessories.length)
   }
@@ -173,8 +175,20 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
           clusters: {
             rvcRunMode: {
               supportedModes: [
-                { label: 'Idle', mode: 0, modeTags: [{ value: 16384 }] },
-                { label: 'Cleaning', mode: 1, modeTags: [{ value: 16385 }] },
+                {
+                  label: 'Idle',
+                  mode: 0,
+                  modeTags: [
+                    { value: 16384 },
+                  ],
+                },
+                {
+                  label: 'Cleaning',
+                  mode: 1,
+                  modeTags: [
+                    { value: 16385 },
+                  ],
+                },
               ],
               currentMode: 0,
             },
@@ -190,7 +204,9 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
             // declared when the vacuum reports a room list - advertising an empty
             // area list would give a controller a picker with nothing in it.
             ...(vacuumDevice.get_room_list?.()?.length
-              ? { serviceArea: buildServiceAreaCluster(vacuumDevice.get_room_list()) }
+              ? {
+                  serviceArea: buildServiceAreaCluster(vacuumDevice.get_room_list()),
+                }
               : {}),
             rvcOperationalState: {
               // operationalStateLabel is only permitted on manufacturer-specific
@@ -250,7 +266,9 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
     }
 
     // Remove any Matter accessories whose vacuums are no longer in the config
-    const toUnregister = [...unusedMatterAccessories.values()]
+    const toUnregister = [
+      ...unusedMatterAccessories.values(),
+    ]
     toUnregister.forEach((unusedAccessory) => {
       this.log.info(`Removing unused Matter accessory: ${unusedAccessory.displayName}`)
       this.matterAccessories.delete(unusedAccessory.UUID)
@@ -423,7 +441,9 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
         const dockedStatus = vacuumDevice.docked_status()
         const isActive = mode === OperatingModes.START || mode === OperatingModes.STOP
         const isPaused = vacuumDevice.is_paused()
-        const isDocked = invertDockedStatus ? dockedStatus !== 1 : dockedStatus === 1
+        const isDocked = invertDockedStatus
+          ? dockedStatus !== 1
+          : dockedStatus === 1
 
         let operationalState = 66 // Docked
         if (!isDocked) {
@@ -464,7 +484,9 @@ export class SharkIQMatterPlatform extends SharkIQPlatform {
         }
 
         if (fault) {
-          this.log.warn(`${vacuumDevice._name}: ${fault.message}${fault.extendedCode ? ` (extended code ${fault.extendedCode})` : ''}`)
+          this.log.warn(`${vacuumDevice._name}: ${fault.message}${fault.extendedCode
+            ? ` (extended code ${fault.extendedCode})`
+            : ''}`)
         }
 
         this.log.debug(`[Matter] Vacuum ${vacuumDevice._dsn}: runMode=${runMode}, operationalState=${operationalState}, `

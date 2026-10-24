@@ -101,7 +101,10 @@ class PluginUiServer extends HomebridgePluginUiServer {
         const raw = fs.readFileSync(authFile, 'utf8')
         const authData = JSON.parse(raw) as { access_token?: string, refresh_token?: string }
         const loggedIn = !!authData.access_token && !!authData.refresh_token
-        return { loggedIn, message: loggedIn ? 'Logged in' : 'Not logged in' }
+        return {
+          loggedIn,
+          message: loggedIn ? 'Logged in' : 'Not logged in',
+        }
       } catch {
         return { loggedIn: false, message: 'Not logged in' }
       }

@@ -39,7 +39,12 @@ function safeJsonParse(jsonString: string): { success: boolean, data?: any, erro
     const parsed = JSON.parse(jsonString)
     return { success: true, data: parsed }
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown parsing error' }
+    return {
+      success: false,
+      error: error instanceof Error
+        ? error.message
+        : 'Unknown parsing error',
+    }
   }
 }
 
@@ -63,7 +68,10 @@ function safeJsonParse(jsonString: string): { success: boolean, data?: any, erro
 function createPlatformProxy(HAPPlatform: any, MatterPlatform: any): any {
   return class SharkIQPlatformProxy {
     constructor(log: any, config: PlatformConfig, api: any) {
-      const cfg: SharkIQPluginConfig & PlatformConfig = { ...DEFAULT_CONFIG, ...config }
+      const cfg: SharkIQPluginConfig & PlatformConfig = {
+        ...DEFAULT_CONFIG,
+        ...config,
+      }
       const preferMatter = cfg.preferMatter ?? true
       const enableMatter = cfg.enableMatter ?? true
       const matterAvailable = !!(api?.isMatterAvailable?.() && api?.isMatterEnabled?.())

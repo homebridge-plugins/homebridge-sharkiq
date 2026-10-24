@@ -2,12 +2,28 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { AylaApi } from './ayla_api.js'
 
-const log = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn(), success: vi.fn() } as any
+const log = {
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  success: vi.fn(),
+} as any
 
 // A SharkNinja account holds every appliance of the brand, so the device list
 // can carry a Ninja grill next to a Shark vacuum (#85)
-const WOODFIRE = { dsn: 'AC000W033162165', key: 1, oem_model: 'woodfire', product_name: 'Woodfire ' }
-const VACUUM = { dsn: 'AC000W012345678', key: 2, oem_model: 'shark_iq', product_name: 'Shark IQ Robot' }
+const WOODFIRE = {
+  dsn: 'AC000W033162165',
+  key: 1,
+  oem_model: 'woodfire',
+  product_name: 'Woodfire ',
+}
+const VACUUM = {
+  dsn: 'AC000W012345678',
+  key: 2,
+  oem_model: 'shark_iq',
+  product_name: 'Shark IQ Robot',
+}
 
 function apiWithDevices(devices: any[], propertiesByDsn: Record<string, any>): AylaApi {
   const api = new AylaApi('/tmp/sharkiq-test-auth.json', 'app-id', 'app-secret', log, false)
@@ -26,7 +42,14 @@ function apiWithDevices(devices: any[], propertiesByDsn: Record<string, any>): A
 }
 
 function props(names: string[]): any[] {
-  return names.map(name => ({ property: { name, value: 1, key: 1, base_type: 'integer' } }))
+  return names.map(name => ({
+    property: {
+      name,
+      value: 1,
+      key: 1,
+      base_type: 'integer',
+    },
+  }))
 }
 
 describe('aylaApi.get_devices', () => {
