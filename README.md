@@ -17,15 +17,15 @@ Homebridge plugin to integrate Shark IQ robot vacuums into HomeKit
 ### Plugin Information
 
 - This plugin allows you to view and control your Shark IQ robot vacuums within HomeKit. The plugin:
-  - connects to SharkNinja's cloud (which runs on the Ayla Networks platform) to discover and control your robots
+  - connects to SharkNinja's cloud to discover and control your robots, using the older Ayla Networks service plus SharkNinja's newer service, which recent models need
   - supports both the US and EU regions
-  - can optionally expose robots over Matter as well as HomeKit
+  - uses Matter automatically when Matter is turned on in Homebridge `v2`, including cleaning single rooms, and uses HomeKit (HAP) otherwise
 
 ### Prerequisites
 
 - To use this plugin, you will need to already have:
   - [Node](https://nodejs.org): latest version of `v22`, `v24` or `v26` - any other major version is not supported.
-  - [Homebridge](https://homebridge.io): `v2` - refer to link for more information and installation instructions.
+  - [Homebridge](https://homebridge.io): `v1.11.4` or later, or `v2` (Matter needs `v2`) - refer to link for more information and installation instructions.
   - A Shark IQ robot vacuum set up in the SharkClean app.
 
 ### Setup
@@ -37,9 +37,11 @@ Homebridge plugin to integrate Shark IQ robot vacuums into HomeKit
 
 ### Features
 
-- A switch to start and stop a clean
-- A fan control reflecting the robot's running state
-- A contact sensor that reports when the robot is docked
+- A fan tile that starts and stops a clean, with its speed setting the power level (Eco, Normal or Max)
+- A "Paused" switch to pause and resume a clean
+- A "Docked" contact sensor that reports when the robot is docked
+- The battery level, charging state and low battery warning
+- Optional Error, Water Tank and Mop Plate sensors
 
 ### Help/About
 
