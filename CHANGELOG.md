@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. This projec
 
 - ci: update github actions to their latest versions (#100)
 - chore(deps): dependency updates
+- docs: correct the homebridge version, cloud services, matter and features in the readme
 
 ## v1.6.6 (2026-10-18)
 
