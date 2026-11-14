@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This projec
 - ci: update github actions to their latest versions (#100)
 - docs: correct the homebridge version, cloud services, matter and features in the readme
 - chore: leave CLAUDE.md out of the published package
+- ci: publish releases with node.js v26, the current lts
 
 ## v1.6.6 (2026-10-18)
 
