@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Changed
 
 - chore(deps): dependency updates
+- fix(build): list the node.js types in tsconfig, a dependency stopped loading them
 
 ## v1.6.7 (2026-11-14)
 
